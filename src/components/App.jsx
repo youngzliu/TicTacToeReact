@@ -6,12 +6,18 @@ import Block from "./block";
 import { makeMove } from "../actions";
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.counter = 0;
+    this.checkWinner = this.checkWinner.bind(this);
+    this.clickBoard = this.clickBoard.bind(this);
+  }
   clickBoard(x, y) {
-    if (this.checkWinner() !== true) {
+    if (this.checkWinner() === false) {
       const { dispatch } = this.props;
       dispatch(makeMove(x, y));
     }
-    if (this.checkWinner()) {
+    if (this.checkWinner() === true) {
       if (this.props.turn === true) {
         let playAgain = confirm("X has won! Start new game?");
         if (playAgain) {
@@ -29,6 +35,9 @@ class App extends React.Component {
           location.reload();
         }
       }
+    } else if (this.checkWinner() === "draw") {
+      alert("Its a draw, restarting game");
+      location.reload();
     }
   }
 
@@ -81,6 +90,18 @@ class App extends React.Component {
       this.props.ticTacArray[2][0] !== "empty"
     ) {
       return true;
+    } else if (
+      this.props.ticTacArray[0][0] !== "empty" &&
+      this.props.ticTacArray[1][0] !== "empty" &&
+      this.props.ticTacArray[2][0] !== "empty" &&
+      this.props.ticTacArray[0][1] !== "empty" &&
+      this.props.ticTacArray[0][2] !== "empty" &&
+      this.props.ticTacArray[1][1] !== "empty" &&
+      this.props.ticTacArray[2][2] !== "empty" &&
+      this.props.ticTacArray[2][1] !== "empty" &&
+      this.props.ticTacArray[1][2] !== "empty"
+    ) {
+      return "draw";
     }
     return false;
   }
